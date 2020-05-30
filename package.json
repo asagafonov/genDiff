@@ -4,7 +4,7 @@
   "description": "Differences' comparer",
   "main": "index.js",
   "bin": {
-    "frontend-project-lvl2": "gendiff.js"
+    "gendiff": "bin/gendiff.js"
   },
   "dependencies": {
     "commander": "^5.1.0"
