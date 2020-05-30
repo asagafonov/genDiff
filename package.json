@@ -1,0 +1,45 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "1.0.0",
+  "description": "Differences' comparer",
+  "main": "index.js",
+  "bin": {
+    "frontend-project-lvl2": "gendiff.js"
+  },
+  "dependencies": {
+    "commander": "^5.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.1",
+    "@babel/node": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "eslint": "^7.1.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "jest": "^26.0.1"
+  },
+  "scripts": {
+    "test": "console.log('Welcome to the differences' comparer)",
+    "build": "NODE_ENV=production babel src --out-dir dist",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asagafonov/frontend-project-lvl2.git"
+  },
+  "keywords": [
+    "cli",
+    "comparer",
+    "project"
+  ],
+  "author": "asagafonov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asagafonov/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/asagafonov/frontend-project-lvl2#readme"
+}
