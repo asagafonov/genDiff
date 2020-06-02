@@ -3,16 +3,16 @@ import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
 
-const compareObjects = (fileName1, fileName2) => {
-  if (fileName1 === undefined || fileName2 === undefined) {
+const compareFiles = (path1, path2) => {
+  if (path1 === undefined || path2 === undefined) {
     return undefined;
   }
-  if (fileName1.length <= 0 || fileName2.length <= 0) {
+  if (path1.length <= 0 || path2.length <= 0) {
     return undefined;
   }
   const currentDirectory = process.cwd();
-  const pathToObject1 = path.isAbsolute(fileName1) ? fileName1 : path.resolve(currentDirectory, String(fileName1));
-  const pathToObject2 = path.isAbsolute(fileName2) ? fileName2 : path.resolve(currentDirectory, String(fileName2));
+  const pathToObject1 = path.isAbsolute(path1) ? path1 : path.resolve(currentDirectory, path1);
+  const pathToObject2 = path.isAbsolute(path2) ? path2 : path.resolve(currentDirectory, path2);
   const file1 = JSON.parse(fs.readFileSync(pathToObject1));
   const file2 = JSON.parse(fs.readFileSync(pathToObject2));
 
@@ -37,11 +37,11 @@ const compareObjects = (fileName1, fileName2) => {
       result.push(`   + ${key}: ${file2[key]}`);
     }
   });
-  let resultAsString ='{\n';
+  let resultAsString = '{\n';
   resultAsString += _.uniq(result).join('\n');
   resultAsString += '\n}';
   console.log(resultAsString);
   return resultAsString;
 };
 
-export default compareObjects;
+export default compareFiles;

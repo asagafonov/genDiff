@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import compareObjects from '../src/index.js';
+import compareFiles from '../src/index.js';
 
 const genDiff = program
   .description('Compares two configuration files and shows a difference.')
@@ -8,7 +8,7 @@ const genDiff = program
   .helpOption('-h, --help', 'output usage information')
   .arguments('<filepath1> <filepath2>')
   .option('-f, --format [type]', 'output format')
-  .action((filepath1, filepath2) => compareObjects(filepath1, filepath2));
+  .action((filepath1, filepath2) => compareFiles(filepath1, filepath2));
 
 program.parse(process.argv);
 
