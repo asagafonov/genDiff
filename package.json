@@ -1,8 +1,8 @@
 {
   "name": "frontend-project-lvl2",
   "version": "1.0.0",
-  "description": "Differences' comparer",
-  "main": "index.js",
+  "description": "Differences' comparator",
+  "main": "/src/index.js",
   "bin": {
     "gendiff": "bin/gendiff.js"
   },
@@ -20,8 +20,8 @@
     "jest": "^26.0.1"
   },
   "scripts": {
-    "test": "console.log('Welcome to the differences' comparer)",
-    "build": "NODE_ENV=production babel src --out-dir dist",
+    "test": "jest",
+    "build": "NODE_ENV=production babel src bin --out-dir dist",
     "prepublishOnly": "npm run build"
   },
   "files": [
@@ -33,7 +33,7 @@
   },
   "keywords": [
     "cli",
-    "comparer",
+    "comparator",
     "project"
   ],
   "author": "asagafonov",

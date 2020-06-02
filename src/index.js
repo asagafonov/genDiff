@@ -4,6 +4,12 @@ import fs from 'fs';
 import _ from 'lodash';
 
 const compareObjects = (fileName1, fileName2) => {
+  if (fileName1 === undefined || fileName2 === undefined) {
+    return undefined;
+  }
+  if (fileName1.length <= 0 || fileName2.length <= 0) {
+    return undefined;
+  }
   const currentDirectory = process.cwd();
   const pathToObject1 = path.isAbsolute(fileName1) ? fileName1 : path.resolve(currentDirectory, String(fileName1));
   const pathToObject2 = path.isAbsolute(fileName2) ? fileName2 : path.resolve(currentDirectory, String(fileName2));

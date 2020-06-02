@@ -2,7 +2,7 @@
 import { program } from 'commander';
 import compareObjects from '../src/index.js';
 
-program
+const genDiff = program
   .description('Compares two configuration files and shows a difference.')
   .version('0.0.1', '-V, --version', 'output the version number')
   .helpOption('-h, --help', 'output usage information')
@@ -11,3 +11,5 @@ program
   .action((filepath1, filepath2) => compareObjects(filepath1, filepath2));
 
 program.parse(process.argv);
+
+export default genDiff;
