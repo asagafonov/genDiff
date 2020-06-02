@@ -3,14 +3,7 @@ import compareObjects from '../src/index.js';
 
 test('compare objects', () => {
   expect(compareObjects('before.json', 'after.json')).toEqual(
-    `{
-     - follow: false
-     host: hexlet.io
-     - proxy: 123.234.53.22
-     + timeout: 20
-     - timeout: 50
-     + verbose: true
-  }`,
+    '{\n   - follow: false\n   host: hexlet.io\n   - proxy: 123.234.53.22\n   + timeout: 20\n   - timeout: 50\n   + verbose: true\n}',
   );
   expect(compareObjects()).toBeUndefined();
   expect(compareObjects('', '')).toBeUndefined();
