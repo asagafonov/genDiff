@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-import { program } from 'commander';
+import commander from 'commander';
 import compareFiles from '../src/index.js';
+
+const program = commander.createCommand();
 
 const genDiff = program
   .description('Compares two configuration files and shows a difference.')

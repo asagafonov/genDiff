@@ -37,6 +37,6 @@ jobs:
         env:
           CI: true
       - name: Run Jest
-        # Run Linter
+        # Run Jest 
         run: |
           npx jest
