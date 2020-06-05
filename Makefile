@@ -12,3 +12,6 @@ lint:
 
 test:
 	gendiff before.json after.json
+
+test-coverage:
+	npm test -- --coverage --coverageProvider=v8
