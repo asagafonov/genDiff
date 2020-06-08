@@ -1,7 +1,5 @@
-import process from 'process';
-import path from 'path';
-import fs from 'fs';
 import _ from 'lodash';
+import parseFile from './parsers/parsers.js';
 
 const compareFiles = (path1, path2) => {
   if (path1 === undefined || path2 === undefined) {
@@ -10,12 +8,8 @@ const compareFiles = (path1, path2) => {
   if (path1.length <= 0 || path2.length <= 0) {
     return undefined;
   }
-  const currentDirectory = process.cwd();
-  const pathToObject1 = path.isAbsolute(path1) ? path1 : path.resolve(currentDirectory, path1);
-  const pathToObject2 = path.isAbsolute(path2) ? path2 : path.resolve(currentDirectory, path2);
-  const file1 = JSON.parse(fs.readFileSync(pathToObject1));
-  const file2 = JSON.parse(fs.readFileSync(pathToObject2));
-
+  const file1 = parseFile(path1);
+  const file2 = parseFile(path2);
   const entries1 = Object.entries(file1);
   const entries2 = Object.entries(file2);
   const list = _.uniqWith(_.concat(entries1, entries2).sort(), _.isEqual);

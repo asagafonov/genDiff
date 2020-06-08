@@ -10,8 +10,14 @@ publish:
 lint:
 	npx eslint .
 
-compare:
+json:
 	gendiff before.json after.json
+
+yml:
+	gendiff before.yml after.yml
+
+ini:
+	gendiff before.ini after.ini
 
 jest:
 	npx --node-arg --experimental-vm-modules jest
