@@ -11,13 +11,13 @@ lint:
 	npx eslint .
 
 json:
-	gendiff before.json after.json
+	gendiff ./__fixtures__/before.json ./__fixtures__/after.json
 
 yml:
-	gendiff before.yml after.yml
+	gendiff ./__fixtures__/before.yml ./__fixtures__/after.yml
 
 ini:
-	gendiff before.ini after.ini
+	gendiff ./__fixtures__/before.ini ./__fixtures__/after.ini
 
 jest:
 	npx --node-arg --experimental-vm-modules jest

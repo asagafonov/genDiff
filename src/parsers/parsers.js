@@ -1,13 +1,13 @@
 import fs from 'fs';
-import YAML from 'js-yaml';
 import path from 'path';
 import process from 'process';
-import INI = 'ini';
+import YAML from 'js-yaml';
+import INI from 'ini';
 
 const parseFile = (filename) => {
   const currentDirectory = process.cwd();
   const pathToFile = path.resolve(currentDirectory, filename);
-  const readFile = fs.readFileSync(pathToFile);
+  const readFile = fs.readFileSync(pathToFile, 'utf-8');
   const extension = path.extname(filename);
   let result;
   if (extension === '.json') {
