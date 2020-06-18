@@ -18,7 +18,7 @@ const compareFiles = (path1, path2) => {
     const [key, value] = element;
     if (_.has(file1, key) && _.has(file2, key)) {
       if (file1[key] === file2[key]) {
-        result.push(`   ${key}: ${value}`);
+        result.push(`   ${key}: ${file1[key]}`);
       } else {
         result.push(`   + ${key}: ${file2[key]}`);
         result.push(`   - ${key}: ${file1[key]}`);
@@ -39,3 +39,36 @@ const compareFiles = (path1, path2) => {
 };
 
 export default compareFiles;
+
+/*
+const isObject = (value) => {
+  return Object.prototype.toString.call(value) === '[object Object]'
+};
+
+const deconstructObject = (file1, file2) => {
+  const keys1 = Object.keys(file1);
+  const keys2 = Object.keys(file2);
+  const keys = _.uniq(_.concat(keys1, keys2));
+
+  const list = keys.flatMap((key) => {
+    if (_.has(file1, key) && !_.has(file2, key)) {
+      return { name: key, value: file1[key], status: 'deleted' };
+    }
+    if (!_.has(file1, key) && _.has(file2, key)) {
+      return { name: key, value: file2[key], status: 'added' };
+    }
+    if (_.has(file1, key) && _.has(file2, key)) {
+      if (!isObject(file1[key]) || !isObject(file2[key])) {
+        if (file1[key] === file2[key]) {
+          return { name: key, value: file1[key], status: 'unmodified'};
+        } else {
+        return [{ name: key, value: file1[key], status: 'deleted' }, { name: key, value: file2[key], status: 'added' }];
+        }
+      }
+      const newValue = genDiff(file1[key], file2[key]);
+      return { name: key, value: newValue };
+    }
+  });
+  return list;
+};
+*/
