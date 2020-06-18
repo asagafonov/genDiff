@@ -52,23 +52,27 @@ const deconstructObject = (file1, file2) => {
 
   const list = keys.flatMap((key) => {
     if (_.has(file1, key) && !_.has(file2, key)) {
-      return { name: key, value: file1[key], status: 'deleted' };
+      return { name: key, status: 'deleted', children: file1[key] };
     }
     if (!_.has(file1, key) && _.has(file2, key)) {
-      return { name: key, value: file2[key], status: 'added' };
+      return { name: key, status: 'added', children: file2[key] };
     }
     if (_.has(file1, key) && _.has(file2, key)) {
       if (!isObject(file1[key]) || !isObject(file2[key])) {
         if (file1[key] === file2[key]) {
-          return { name: key, value: file1[key], status: 'unmodified'};
+          return { name: key, status: 'unmodified', children: file1[key], };
         } else {
-        return [{ name: key, value: file1[key], status: 'deleted' }, { name: key, value: file2[key], status: 'added' }];
+        return [{ name: key, status: 'deleted', children: file1[key] }, { name: key, status: 'added', children: file2[key] }];
         }
       }
-      const newValue = genDiff(file1[key], file2[key]);
-      return { name: key, value: newValue };
+      const newValue = deconstructObject(file1[key], file2[key]);
+      return { name: key, status: 'unmodified', children: newValue  };
     }
   });
   return list;
 };
+
+const deconstructed = deconstructObject(before, after);
+const stringified = JSON.stringify(deconstructed, null, ' ');
+console.log(stringified);
 */
