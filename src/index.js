@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import parseFile from './parsers/parsers.js';
-
-const isObject = (value) => (Object.prototype.toString.call(value) === '[object Object]');
+import isObject from './utils/utils.js';
 
 const deconstructObject = (file1, file2) => {
   const keys1 = Object.keys(file1);
