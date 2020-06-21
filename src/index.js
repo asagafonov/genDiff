@@ -39,7 +39,7 @@ const constructDiff = (diff) => {
       if (Array.isArray(children)) {
         return { ...acc, [`  ${name}`]: constructDiff(children) };
       }
-      return { ...acc, [`  ${name}`]: children };
+      return { ...acc, [`    ${name}`]: children };
     }
     if (status === 'added') {
       return { ...acc, [`  + ${name}`]: children };
