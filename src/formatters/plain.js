@@ -48,7 +48,7 @@ export default (diff) => {
       name,
       status: 'changed',
       value1,
-      mvalue2,
+      value2,
     });
   }
   const concat = _.concat(unique, modified);
