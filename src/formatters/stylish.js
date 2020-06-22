@@ -1,4 +1,4 @@
-import { isObject } from './utils/utils.js';
+import { isObject } from '../utils/utils.js';
 
 const stylish = (diff) => {
   const result = diff.reduce((acc, item) => {

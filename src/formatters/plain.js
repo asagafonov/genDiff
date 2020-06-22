@@ -1,8 +1,9 @@
-import { isObject, isUnique } from './utils/utils.js';
+import _ from 'lodash';
+import { isObject, isUnique } from '../utils/utils.js';
 
 const generatePlainDiff = (diff) => {
-  const iter = (diff, path) => {
-    return diff.reduce((acc, item) => {
+  const iter = (data, path) => data
+    .reduce((acc, item) => {
       const { name, status, children } = item;
       const newName = `${path}.${name}`;
       if (status === 'unmodified') {
@@ -23,8 +24,8 @@ const generatePlainDiff = (diff) => {
         }
         return [...acc, { name: newName, status, children }];
       }
+      return undefined;
     }, []);
-  }
   return iter(diff, '');
 };
 
@@ -36,15 +37,19 @@ export default (diff) => {
     if (isUnique(list, property)) {
       unique.push(property);
     } else {
-    notUnique.push(property);
+      notUnique.push(property);
     }
-  })
+  });
   const modified = [];
   for (let i = 0; i < notUnique.length; i += 2) {
-    const name = notUnique[i].name;
-    const value1 = notUnique[i].children;
-    const value2 = notUnique[i + 1].children;
-    modified.push({ 'name': name, 'status': 'changed', 'value1': value1, 'value2': value2 });
+    const { name, children: value1 } = notUnique[i];
+    const { children: value2 } = notUnique[i + 1];
+    modified.push({
+      name,
+      status: 'changed',
+      value1,
+      mvalue2,
+    });
   }
   const concat = _.concat(unique, modified);
   const result = concat.flatMap((property) => {
@@ -59,5 +64,5 @@ export default (diff) => {
     }
     return [];
   });
-  return result.join('\n');
+  return result.sort().join('\n');
 };
