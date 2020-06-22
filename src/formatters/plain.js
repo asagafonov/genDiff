@@ -1,5 +1,6 @@
+import { isObject, isUnique } from './utils/utils.js';
 
-const plainReduce = (diff) => {
+const generatePlainDiff = (diff) => {
   const iter = (diff, path) => {
     return diff.reduce((acc, item) => {
       const { name, status, children } = item;
@@ -27,19 +28,8 @@ const plainReduce = (diff) => {
   return iter(diff, '');
 };
 
-
-const isUnique = (arr, obj) => {
-  const name = obj.name;
-  let counter = 0;
-  arr.forEach((object) => {
-    if (object.name === name) {
-      counter += 1;
-    }
-  })
-  return counter === 1 ? true : false;
-};
-
-const plain = (list) => {
+export default (diff) => {
+  const list = generatePlainDiff(diff);
   const unique = [];
   const notUnique = [];
   list.forEach((property) => {
@@ -57,7 +47,7 @@ const plain = (list) => {
     modified.push({ 'name': name, 'status': 'changed', 'value1': value1, 'value2': value2 });
   }
   const concat = _.concat(unique, modified);
-  const result = concat.map((property) => {
+  const result = concat.flatMap((property) => {
     if (property.status === 'added') {
       return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
     }
@@ -67,6 +57,7 @@ const plain = (list) => {
     if (property.status === 'changed') {
       return [`Property '${property.name.slice(1)}' was changed from '${property.value1}' to '${property.value2}'`];
     }
+    return [];
   });
   return result.join('\n');
 };

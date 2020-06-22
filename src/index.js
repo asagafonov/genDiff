@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import parseFile from './parsers/parsers.js';
-import isObject from './utils/utils.js';
+import { isObject } from './utils/utils.js';
 
 const deconstructObject = (file1, file2) => {
   const keys1 = Object.keys(file1);
@@ -53,12 +53,14 @@ const constructDiff = (diff) => {
 };
 
 export default (path1, path2) => {
+  /*
   if (path1 === undefined || path2 === undefined) {
     return undefined;
   }
   if (path1.length <= 0 || path2.length <= 0) {
     return undefined;
   }
+  */
   const file1 = parseFile(path1);
   const file2 = parseFile(path2);
   const deconstructed = deconstructObject(file1, file2);
