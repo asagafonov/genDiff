@@ -12,13 +12,7 @@ const generatePlainDiff = (diff) => {
         }
         return [...acc, { name: newName, status, children }];
       }
-      if (status === 'added') {
-        if (isObject(children)) {
-          return [...acc, { name: newName, status, children: '[complex value]' }];
-        }
-        return [...acc, { name: newName, status, children }];
-      }
-      if (status === 'deleted') {
+      if (status === 'added' || status === 'deleted') {
         if (isObject(children)) {
           return [...acc, { name: newName, status, children: '[complex value]' }];
         }
@@ -31,15 +25,8 @@ const generatePlainDiff = (diff) => {
 
 export default (diff) => {
   const list = generatePlainDiff(diff);
-  const unique = [];
-  const notUnique = [];
-  list.forEach((property) => {
-    if (isUnique(list, property)) {
-      unique.push(property);
-    } else {
-      notUnique.push(property);
-    }
-  });
+  const unique = list.filter((element) => isUnique(list, element));
+  const notUnique = list.filter((element) => !isUnique(list, element));
   const modified = [];
   for (let i = 0; i < notUnique.length; i += 2) {
     const { name, children: value1 } = notUnique[i];

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import parseFile from './parsers/parsers.js';
 import { isObject } from './utils/utils.js';
+import chooseFormat from './formatters/index.js';
 
 const deconstructObject = (file1, file2) => {
   const keys1 = Object.keys(file1);
@@ -29,42 +30,13 @@ const deconstructObject = (file1, file2) => {
 };
 
 
-const constructDiff = (diff) => {
-  const result = diff.reduce((acc, item) => {
-    const { name, status, children } = item;
-    if (status === 'unmodified') {
-      if (isObject(children)) {
-        return { ...acc, [`  ${name}`]: constructDiff([children]) };
-      }
-      if (Array.isArray(children)) {
-        return { ...acc, [`  ${name}`]: constructDiff(children) };
-      }
-      return { ...acc, [`    ${name}`]: children };
-    }
-    if (status === 'added') {
-      return { ...acc, [`  + ${name}`]: children };
-    }
-    if (status === 'deleted') {
-      return { ...acc, [`  - ${name}`]: children };
-    }
-    return undefined;
-  }, {});
-  return result;
-};
-
-export default (path1, path2) => {
-  /*
-  if (path1 === undefined || path2 === undefined) {
-    return undefined;
-  }
-  if (path1.length <= 0 || path2.length <= 0) {
-    return undefined;
-  }
-  */
+export default (path1, path2, format) => {
   const file1 = parseFile(path1);
   const file2 = parseFile(path2);
   const deconstructed = deconstructObject(file1, file2);
-  const diff = constructDiff(deconstructed);
+  const diff = chooseFormat(format, deconstructed);
+  console.log();
   console.log(diff);
+  console.log();
   return diff;
 };
