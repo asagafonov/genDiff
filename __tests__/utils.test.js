@@ -1,12 +1,10 @@
 import { test, expect } from '@jest/globals';
-import { isObject, isUnique } from '../src/utils/utils.js';
+import { isObject, isUnique, stringify, fixIniParser } from '../src/utils/utils.js';
 
-const item1 = { name: 'Bob' };
-const item2 = ['name', 'Bob'];
-const item3 = 'the name is Bob';
-const item4 = undefined;
-const item5 = null;
-const item6 = false;
+//isObject
+
+const items = [{ name: 'Bob' }, ['name', 'Bob'], 'the name is Bob', undefined, null, false];
+const [item1, item2, item3, item4, item5, item6] = items;
 
 test('is object', () => {
   expect(isObject(item1)).toBeTruthy();
@@ -17,6 +15,8 @@ test('is object', () => {
   expect(isObject(item6)).toBeFalsy();
 });
 
+//isUniqueObject
+
 const objects = [
   { name: 'Bob', status: true, value: 'x' },
   { name: 'Chuck', status: false, value: 'y' },
@@ -25,12 +25,24 @@ const objects = [
   { name: 'Sarah', status: true, value: 'z' },
 ];
 
-const object1 = { name: 'Bob', status: true, value: 'x' };
-const object2 = { name: 'Chuck', status: false, value: 'y' };
-const object3 = { name: 'Sarah', status: true, value: 'y' };
+const [object1, object2, , object3, ] = objects;
 
 test('is unique object', () => {
   expect(isUnique(objects, object1)).toBeFalsy();
   expect(isUnique(objects, object2)).toBeTruthy();
   expect(isUnique(objects, object3)).toBeFalsy();
+});
+
+//stringify
+
+test('stringify', () => {
+  expect(stringify({ a: 'b' })).toEqual(' a: b ');
+  expect(stringify({ a: 'b', c: 'd'})).toEqual(' a: b \n c: d ');
+})
+
+//fixIniParser
+
+test('fix ini', () => {
+  expect(fixIniParser({ a: 'yes', b: '1', c: '2'})).toEqual({ a: 'yes', b: 1, c: 2 });
+  expect(fixIniParser({ a: 'yes', b: 'no'})).toEqual({ a: 'yes', b: 'no'});
 });

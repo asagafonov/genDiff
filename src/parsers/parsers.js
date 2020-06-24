@@ -10,14 +10,10 @@ const parseFile = (filename) => {
   const pathToFile = path.resolve(currentDirectory, filename);
   const readFile = fs.readFileSync(pathToFile, 'utf-8');
   const extension = path.extname(filename);
-  let result;
-  if (extension === '.json') {
-    result = JSON.parse(readFile);
-  }
   if (extension === '.yml') {
     const ymlFile = YAML.safeLoad(readFile);
     const entries = Object.entries(ymlFile);
-    result = entries.reduce((acc, currentValue) => {
+    return entries.reduce((acc, currentValue) => {
       const [key, [value]] = currentValue;
       acc[key] = value;
       return acc;
@@ -25,9 +21,9 @@ const parseFile = (filename) => {
   }
   if (extension === '.ini') {
     const iniFile = INI.parse(readFile);
-    result = fixIniParser(iniFile);
+    return fixIniParser(iniFile);
   }
-  return result;
+  return JSON.parse(readFile);
 };
 
 export default parseFile;
