@@ -7,7 +7,6 @@ const generateStylishDiff = (diff) => {
       const space = ' ';
       const indent1 = space.repeat(depth1);
       const indent2 = space.repeat(depth2);
-
       if (status === 'unmodified') {
         if (Array.isArray(children)) {
           return [...acc, [`${indent1}${name}: {\n${iter(children, depth1 + 4, depth2 + 4).join('\n')}\n${indent1}}`]];
@@ -28,7 +27,6 @@ const generateStylishDiff = (diff) => {
       }
       return undefined;
     }, []);
-    
   return iter(diff, 4, 2);
 };
 

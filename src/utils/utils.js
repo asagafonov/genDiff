@@ -21,7 +21,7 @@ const stringify = (object) => {
 };
 
 const fixIniParser = (object) => {
-  const digitsOnly = (string) => [...string].every(letter => '0123456789'.includes(letter));
+  const digitsOnly = (string) => [...string].every((letter) => '0123456789'.includes(letter));
   const entries = Object.entries(object);
   const fixed = entries.map((item) => {
     const [key, value] = item;
@@ -37,4 +37,9 @@ const fixIniParser = (object) => {
   return result;
 };
 
-export { isObject, isUnique, stringify, fixIniParser };
+export {
+  isObject,
+  isUnique,
+  stringify,
+  fixIniParser,
+};
