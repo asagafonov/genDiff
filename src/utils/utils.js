@@ -20,4 +20,21 @@ const stringify = (object) => {
   return stringified.join('\n');
 };
 
-export { isObject, isUnique, stringify };
+const fixIniParser = (object) => {
+  const digitsOnly = (string) => [...string].every(letter => '0123456789'.includes(letter));
+  const entries = Object.entries(object);
+  const fixed = entries.map((item) => {
+    const [key, value] = item;
+    if (typeof value === 'string') {
+      return digitsOnly(value) ? [key, Number(value)] : [key, value];
+    }
+    return [key, value];
+  });
+  const result = fixed.reduce((acc, item) => {
+    const [key, value] = item;
+    return { ...acc, [key]: value };
+  }, {});
+  return result;
+};
+
+export { isObject, isUnique, stringify, fixIniParser };

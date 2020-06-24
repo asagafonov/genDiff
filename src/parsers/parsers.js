@@ -3,6 +3,7 @@ import path from 'path';
 import process from 'process';
 import YAML from 'js-yaml';
 import INI from 'ini';
+import { fixIniParser } from '../utils/utils.js';
 
 const parseFile = (filename) => {
   const currentDirectory = process.cwd();
@@ -23,7 +24,8 @@ const parseFile = (filename) => {
     }, {});
   }
   if (extension === '.ini') {
-    result = INI.parse(readFile);
+    const iniFile = INI.parse(readFile);
+    result = fixIniParser(iniFile);
   }
   return result;
 };

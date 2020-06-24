@@ -9,6 +9,7 @@ const expected = {
 };
 
 test('parse file', () => {
-  expect(parseFile('./__fixtures__/before.json')).toEqual(expected);
-  expect(parseFile('./__fixtures__/before.yml')).toEqual(expected);
+  expect(parseFile('./__fixtures__/json/jsonUnit.json')).toEqual(expected);
+  expect(parseFile('./__fixtures__/yaml/yamlUnit.yml')).toEqual(expected);
+  expect(parseFile('./__fixtures__/ini/iniUnit.ini')).toEqual(expected);
 });
