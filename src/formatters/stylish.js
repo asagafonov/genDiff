@@ -1,27 +1,40 @@
-import { isObject } from '../utils/utils.js';
+import { isObject, stringify } from '../utils/utils.js';
 
-const stylish = (diff) => {
-  const result = diff.reduce((acc, item) => {
-    const { name, status, children } = item;
-    if (status === 'unmodified') {
-      if (isObject(children)) {
-        return { ...acc, [`  ${name}`]: stylish([children]) };
+const generateStylishDiff = (diff) => {
+  const iter = (data, depth1, depth2) => data
+    .reduce((acc, item) => {
+      const { name, status, children } = item;
+      const space = ' ';
+      const indent1 = space.repeat(depth1);
+      const indent2 = space.repeat(depth2);
+
+      if (status === 'unmodified') {
+        if (Array.isArray(children)) {
+          return [...acc, [`${indent1}${name}: {\n${iter(children, depth1 + 4, depth2 + 4).join('\n')}\n${indent1}}`]];
+        }
+        return [...acc, [`${indent1}${name}: ${children}`]];
       }
-      if (Array.isArray(children)) {
-        return { ...acc, [`  ${name}`]: stylish(children) };
+      if (status === 'added') {
+        if (isObject(children)) {
+          return [...acc, [`${indent2}+ ${name}: {${stringify(children)}}`]];
+        }
+        return [...acc, [`${indent2}+ ${name}: ${children}`]];
       }
-      return { ...acc, [`    ${name}`]: children };
-    }
-    if (status === 'added') {
-      return { ...acc, [`  + ${name}`]: children };
-    }
-    if (status === 'deleted') {
-      return { ...acc, [`  - ${name}`]: children };
-    }
-    return undefined;
-  }, {});
-  return result;
+      if (status === 'deleted') {
+        if (isObject(children)) {
+          return [...acc, [`${indent2}- ${name}: {${stringify(children)}}`]];
+        }
+        return [...acc, [`${indent2}- ${name}: ${children}`]];
+      }
+      return undefined;
+    }, []);
+    
+  return iter(diff, 4, 2);
 };
 
+const stylish = (diff) => {
+  const result = generateStylishDiff(diff);
+  return `{\n${result.join('\n')}\n}`;
+};
 
 export default stylish;

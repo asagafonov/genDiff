@@ -11,4 +11,13 @@ const isUnique = (arr, obj) => {
   return counter === 1;
 };
 
-export { isObject, isUnique };
+const stringify = (object) => {
+  const entries = Object.entries(object);
+  const stringified = entries.map((element) => {
+    const [key, value] = element;
+    return [` ${key}: ${value} `];
+  });
+  return stringified.join('\n');
+};
+
+export { isObject, isUnique, stringify };

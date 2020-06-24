@@ -41,7 +41,7 @@ export default (diff) => {
   const concat = _.concat(unique, modified);
   const result = concat.flatMap((property) => {
     if (property.status === 'added') {
-      return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
+      return [`Property '${property.name.slice(1)}' was added with value: '${property.children}'`];
     }
     if (property.status === 'deleted') {
       return [`Property '${property.name.slice(1)}' was deleted`];
