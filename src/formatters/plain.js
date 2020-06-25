@@ -41,5 +41,5 @@ export default (diff) => {
     }
     return [];
   });
-  return result.sort().join('\n'); 
+  return result.sort().join('\n');
 };

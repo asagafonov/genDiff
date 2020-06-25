@@ -30,7 +30,7 @@ const generateStylishDiff = (diff) => {
   return iter(diff, 4, 2);
 };
 
- export default (diff) => {
+export default (diff) => {
   const result = generateStylishDiff(diff);
   return `{\n${result.join('\n')}\n}`;
 };
