@@ -10,14 +10,14 @@ publish:
 lint:
 	npx eslint .
 
+stylish:
+	gendiff ./__fixtures__/before.json ./__fixtures__/after.json
+
+plain:
+	gendiff -f plain ./__fixtures__/before.json ./__fixtures__/after.json
+
 json:
-	gendiff ./__fixtures__/before1.json ./__fixtures__/after1.json
-
-yml:
-	gendiff ./__fixtures__/before.yml ./__fixtures__/after.yml
-
-ini:
-	gendiff ./__fixtures__/before.ini ./__fixtures__/after.ini
+	gendiff -f json ./__fixtures__/before.json ./__fixtures__/after.json
 
 jest:
 	npx --node-arg --experimental-vm-modules jest

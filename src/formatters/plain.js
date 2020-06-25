@@ -29,15 +29,17 @@ export default (diff) => {
   const notUnique = list.filter((element) => !isUnique(list, element));
   const modified = combineObjects(notUnique);
   const concat = _.concat(unique, modified);
-  concat.forEach((property) => {
+  const result = concat.flatMap((property) => {
     if (property.status === 'added') {
-      console.log(`Property '${property.name.slice(1)}' was added with value:`, property.children);
+      return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
     }
     if (property.status === 'deleted') {
-      console.log(`Property '${property.name.slice(1)}' was deleted`);
+      return [`Property '${property.name.slice(1)}' was deleted`];
     }
     if (property.status === 'changed') {
-      console.log(`Property '${property.name.slice(1)}' was changed from`, property.value1, 'to', property.value2);
+      return [`Property '${property.name.slice(1)}' was changed from '${property.value1}' to '${property.value2}'`];
     }
+    return [];
   });
+  return result.sort().join('\n'); 
 };
