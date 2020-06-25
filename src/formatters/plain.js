@@ -12,13 +12,10 @@ const generatePlainDiff = (diff) => {
         }
         return [...acc, { name: newName, status, children }];
       }
-      if (status === 'added' || status === 'deleted') {
-        if (isObject(children)) {
-          return [...acc, { name: newName, status, children: '[complex value]' }];
-        }
-        return [...acc, { name: newName, status, children }];
+      if (isObject(children)) {
+        return [...acc, { name: newName, status, children: '[complex value]' }];
       }
-      return undefined;
+      return [...acc, { name: newName, status, children }];
     }, []);
   return iter(diff, '');
 };

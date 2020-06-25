@@ -19,13 +19,10 @@ const generateStylishDiff = (diff) => {
         }
         return [...acc, [`${indent2}+ ${name}: ${children}`]];
       }
-      if (status === 'deleted') {
-        if (isObject(children)) {
-          return [...acc, [`${indent2}- ${name}: {${stringify(children)}}`]];
-        }
-        return [...acc, [`${indent2}- ${name}: ${children}`]];
+      if (isObject(children)) {
+        return [...acc, [`${indent2}- ${name}: {${stringify(children)}}`]];
       }
-      return undefined;
+      return [...acc, [`${indent2}- ${name}: ${children}`]];
     }, []);
   return iter(diff, 4, 2);
 };
