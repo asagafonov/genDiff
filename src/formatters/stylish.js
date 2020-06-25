@@ -32,7 +32,7 @@ const generateStylishDiff = (diff) => {
 
 const stylish = (diff) => {
   const result = generateStylishDiff(diff);
-  return `{\n${result.join('\n')}\n}`;
+  console.log(`{\n${result.join('\n')}\n}`);
 };
 
 export default stylish;

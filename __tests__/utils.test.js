@@ -4,6 +4,7 @@ import {
   isUnique,
   stringify,
   fixIniParser,
+  combineObjects,
 } from '../src/utils/utils.js';
 
 // isObject
@@ -50,4 +51,41 @@ test('stringify', () => {
 test('fix ini', () => {
   expect(fixIniParser({ a: 'yes', b: '1', c: '2' })).toEqual({ a: 'yes', b: 1, c: 2 });
   expect(fixIniParser({ a: 'yes', b: 'no' })).toEqual({ a: 'yes', b: 'no' });
+});
+
+// combineObjects
+
+const elements1 = [
+  { name: '.group1.baz', status: 'deleted', children: 'bas' },
+  { name: '.group1.baz', status: 'added', children: 'bars' },
+];
+
+const elements2 = [
+  { name: 'jane', status: 'deleted', children: 'loca' },
+  { name: 'jane', status: 'added', children: 'toca' },
+  { name: 'dendy', status: 'deleted', children: true },
+  { name: 'dendy', status: 'added', children: false },
+];
+
+test('combine objects', () => {
+  expect(combineObjects([])).toEqual([]);
+  expect(combineObjects(elements1)).toEqual([{
+    name: '.group1.baz',
+    status: 'changed',
+    value1: 'bas',
+    value2: 'bars',
+  }]);
+  expect(combineObjects(elements2)).toEqual([{
+    name: 'jane',
+    status: 'changed',
+    value1: 'loca',
+    value2: 'toca',
+  },
+  {
+    name: 'dendy',
+    status: 'changed',
+    value1: true,
+    value2: false,
+  },
+  ]);
 });

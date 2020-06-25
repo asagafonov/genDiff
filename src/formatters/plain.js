@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { isObject, isUnique } from '../utils/utils.js';
+import { isObject, isUnique, combineObjects } from '../utils/utils.js';
 
 const generatePlainDiff = (diff) => {
   const iter = (data, path) => data
@@ -27,29 +27,17 @@ export default (diff) => {
   const list = generatePlainDiff(diff);
   const unique = list.filter((element) => isUnique(list, element));
   const notUnique = list.filter((element) => !isUnique(list, element));
-  const modified = [];
-  for (let i = 0; i < notUnique.length; i += 2) {
-    const { name, children: value1 } = notUnique[i];
-    const { children: value2 } = notUnique[i + 1];
-    modified.push({
-      name,
-      status: 'changed',
-      value1,
-      value2,
-    });
-  }
+  const modified = combineObjects(notUnique);
   const concat = _.concat(unique, modified);
-  const result = concat.flatMap((property) => {
+  concat.forEach((property) => {
     if (property.status === 'added') {
-      return [`Property '${property.name.slice(1)}' was added with value: '${property.children}'`];
+      console.log(`Property '${property.name.slice(1)}' was added with value:`, property.children);
     }
     if (property.status === 'deleted') {
-      return [`Property '${property.name.slice(1)}' was deleted`];
+      console.log(`Property '${property.name.slice(1)}' was deleted`);
     }
     if (property.status === 'changed') {
-      return [`Property '${property.name.slice(1)}' was changed from '${property.value1}' to '${property.value2}'`];
+      console.log(`Property '${property.name.slice(1)}' was changed from`, property.value1, 'to', property.value2);
     }
-    return [];
   });
-  return result.sort().join('\n');
 };

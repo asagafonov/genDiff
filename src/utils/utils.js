@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const isObject = (value) => (Object.prototype.toString.call(value) === '[object Object]');
 
 const isUnique = (arr, obj) => {
@@ -37,9 +39,32 @@ const fixIniParser = (object) => {
   return result;
 };
 
+const combineObjects = (list) => {
+  const iter = (elements, acc) => {
+    if (elements.length < 2) {
+      return [];
+    }
+    const [first, second, ...rest] = elements;
+    const { name, children: value1 } = first;
+    const { children: value2 } = second;
+    const element = {
+      name,
+      status: 'changed',
+      value1,
+      value2,
+    };
+    if (elements.length === 2) {
+      return [...acc, element];
+    }
+    return [...acc, element, ...iter(rest, [])];
+  };
+  return _.uniqWith(iter(list, []), _.isEqual);
+};
+
 export {
   isObject,
   isUnique,
   stringify,
   fixIniParser,
+  combineObjects,
 };
