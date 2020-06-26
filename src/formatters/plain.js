@@ -6,16 +6,25 @@ const generatePlainDiff = (diff) => {
     .reduce((acc, item) => {
       const { name, status, children } = item;
       const newName = `${path}.${name}`;
-      if (status === 'unmodified') {
-        if (Array.isArray(children)) {
-          return [...acc, ...iter(children, newName)];
-        }
-        return [...acc, { name: newName, status, children }];
+      switch (status) {
+        case 'unmodified':
+          if (Array.isArray(children)) {
+            return [...acc, ...iter(children, newName)];
+          }
+          return [...acc, { name: newName, status, children }];
+        case 'added':
+          if (isObject(children)) {
+            return [...acc, { name: newName, status, children: '[complex value]' }];
+          }
+          return [...acc, { name: newName, status, children }];
+        case 'deleted':
+          if (isObject(children)) {
+            return [...acc, { name: newName, status, children: '[complex value]' }];
+          }
+          return [...acc, { name: newName, status, children }];
+        default:
+          throw new Error(`Unknown status ${status}`);
       }
-      if (isObject(children)) {
-        return [...acc, { name: newName, status, children: '[complex value]' }];
-      }
-      return [...acc, { name: newName, status, children }];
     }, []);
   return iter(diff, '');
 };
@@ -27,16 +36,16 @@ export default (diff) => {
   const modified = combineObjects(notUnique);
   const concat = _.concat(unique, modified);
   const result = concat.flatMap((property) => {
-    if (property.status === 'added') {
-      return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
+    switch (property.status) {
+      case 'added':
+        return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
+      case 'deleted':
+        return [`Property '${property.name.slice(1)}' was deleted`];
+      case 'changed':
+        return [`Property '${property.name.slice(1)}' was changed from '${property.value1}' to '${property.value2}'`];
+      default:
+        return [];
     }
-    if (property.status === 'deleted') {
-      return [`Property '${property.name.slice(1)}' was deleted`];
-    }
-    if (property.status === 'changed') {
-      return [`Property '${property.name.slice(1)}' was changed from '${property.value1}' to '${property.value2}'`];
-    }
-    return [];
   });
   return result.sort().join('\n');
 };

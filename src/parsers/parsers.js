@@ -10,20 +10,23 @@ const parseFile = (filename) => {
   const pathToFile = path.resolve(currentDirectory, filename);
   const readFile = fs.readFileSync(pathToFile, 'utf-8');
   const extension = path.extname(filename);
-  if (extension === '.yml') {
-    const ymlFile = YAML.safeLoad(readFile);
-    const entries = Object.entries(ymlFile);
-    return entries.reduce((acc, currentValue) => {
-      const [key, [value]] = currentValue;
-      acc[key] = value;
-      return acc;
-    }, {});
+  switch (extension) {
+    case '.yml':
+      const ymlFile = YAML.safeLoad(readFile);
+      const entries = Object.entries(ymlFile);
+      return entries.reduce((acc, currentValue) => {
+        const [key, [value]] = currentValue;
+        acc[key] = value;
+        return acc;
+      }, {});
+    case '.ini':
+      const iniFile = INI.parse(readFile);
+      return fixIniParser(iniFile);
+    case '.json':
+      return JSON.parse(readFile);
+    default:
+      throw new Error(`Unknown file extension: ${extension}`);
   }
-  if (extension === '.ini') {
-    const iniFile = INI.parse(readFile);
-    return fixIniParser(iniFile);
-  }
-  return JSON.parse(readFile);
 };
 
 export default parseFile;
