@@ -10,17 +10,17 @@ const parseFile = (filename) => {
   const pathToFile = path.resolve(currentDirectory, filename);
   const readFile = fs.readFileSync(pathToFile, 'utf-8');
   const extension = path.extname(filename);
+  const iniFile = INI.parse(readFile);
+  const ymlFile = YAML.safeLoad(readFile);
+  const ymlEntries = Object.entries(ymlFile);
   switch (extension) {
     case '.yml':
-      const ymlFile = YAML.safeLoad(readFile);
-      const entries = Object.entries(ymlFile);
-      return entries.reduce((acc, currentValue) => {
+      return ymlEntries.reduce((acc, currentValue) => {
         const [key, [value]] = currentValue;
         acc[key] = value;
         return acc;
       }, {});
     case '.ini':
-      const iniFile = INI.parse(readFile);
       return fixIniParser(iniFile);
     case '.json':
       return JSON.parse(readFile);
