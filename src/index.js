@@ -36,8 +36,5 @@ export default (filename1, filename2, format) => {
   const file2 = parseFile(pathToFile2);
   const deconstructed = deconstructObject(file1, file2);
   const diff = chooseFormat(format, deconstructed);
-  console.log();
-  console.log(diff);
-  console.log();
   return diff;
 };
