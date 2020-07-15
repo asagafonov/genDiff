@@ -4,7 +4,7 @@ import parseFile from './parsers.js';
 import { isObject } from './utils.js';
 import chooseFormat from './formatters/index.js';
 
-const deconstructObject = (file1, file2) => {
+const listDiffProperties = (file1, file2) => {
   const keys1 = Object.keys(file1);
   const keys2 = Object.keys(file2);
   const keys = _.uniq(_.concat(keys1, keys2).sort());
@@ -21,7 +21,7 @@ const deconstructObject = (file1, file2) => {
       }
       return [{ name: key, status: 'deleted', children: file1[key] }, { name: key, status: 'added', children: file2[key] }];
     }
-    const newValue = deconstructObject(file1[key], file2[key]);
+    const newValue = listDiffProperties(file1[key], file2[key]);
     return { name: key, status: 'unmodified', children: newValue };
   });
   return list;
@@ -34,7 +34,7 @@ export default (filename1, filename2, format) => {
   const pathToFile2 = path.resolve(currentDirectory, filename2);
   const file1 = parseFile(pathToFile1);
   const file2 = parseFile(pathToFile2);
-  const deconstructed = deconstructObject(file1, file2);
-  const diff = chooseFormat(format, deconstructed);
+  const properties = listDiffProperties(file1, file2);
+  const diff = chooseFormat(format, properties);
   return diff;
 };
