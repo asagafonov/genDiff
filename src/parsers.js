@@ -3,12 +3,10 @@ import path from 'path';
 import process from 'process';
 import YAML from 'js-yaml';
 import INI from 'ini';
-import { fixIniParser } from '../utils/utils.js';
+import { fixIniParser } from './utils.js';
 
 const parseFile = (filename) => {
-  const currentDirectory = process.cwd();
-  const pathToFile = path.resolve(currentDirectory, filename);
-  const readFile = fs.readFileSync(pathToFile, 'utf-8');
+  const readFile = fs.readFileSync(filename, 'utf-8');
   const extension = path.extname(filename);
   const iniFile = INI.parse(readFile);
   const ymlFile = YAML.safeLoad(readFile);

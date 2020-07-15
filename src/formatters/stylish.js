@@ -1,4 +1,4 @@
-import { isObject, stringify } from '../utils/utils.js';
+import { isObject, stringify } from '../utils.js';
 
 const generateStylishDiff = (diff) => {
   const iter = (data, depth1, depth2) => data

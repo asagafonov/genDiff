@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { isObject, isUnique, combineObjects } from '../utils/utils.js';
+import { isObject, isUnique, combineObjects } from '../utils.js';
 
 const generatePlainDiff = (diff) => {
   const iter = (data, path) => data

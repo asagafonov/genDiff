@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import parseFile from './parsers/parsers.js';
-import { isObject } from './utils/utils.js';
+import path from 'path';
+import parseFile from './parsers.js';
+import { isObject } from './utils.js';
 import chooseFormat from './formatters/index.js';
 
 const deconstructObject = (file1, file2) => {
@@ -27,9 +28,12 @@ const deconstructObject = (file1, file2) => {
 };
 
 
-export default (path1, path2, format) => {
-  const file1 = parseFile(path1);
-  const file2 = parseFile(path2);
+export default (filename1, filename2, format) => {
+  const currentDirectory = process.cwd();
+  const pathToFile1 = path.resolve(currentDirectory, filename1);
+  const pathToFile2 = path.resolve(currentDirectory, filename2);
+  const file1 = parseFile(pathToFile1);
+  const file2 = parseFile(pathToFile2);
   const deconstructed = deconstructObject(file1, file2);
   const diff = chooseFormat(format, deconstructed);
   console.log();
