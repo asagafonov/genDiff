@@ -1,10 +1,11 @@
 import { test, expect } from '@jest/globals';
+import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import genDiff from '../src/index.js';
 
-const dirname = process.cwd();
-const getFixturePath = (filename) => path.join(dirname, 'frontend-project-lvl2', '..', '__fixtures__', filename);
+const __dirname = path.resolve();
+const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', `/${filename}`);
 
 const path1 = getFixturePath('before.json');
 const path2 = getFixturePath('after.json');

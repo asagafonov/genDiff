@@ -5,7 +5,7 @@ import {
   stringify,
   fixIniParser,
   combineObjects,
-} from '../src/utils/utils.js';
+} from '../src/utils.js';
 
 // isObject
 
