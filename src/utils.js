@@ -22,21 +22,22 @@ const stringify = (object) => {
   return stringified.join('\n');
 };
 
-const fixIniParser = (object) => {
-  const digitsOnly = (string) => [...string].every((letter) => '0123456789'.includes(letter));
-  const entries = Object.entries(object);
-  const fixed = entries.map((item) => {
-    const [key, value] = item;
-    if (typeof value === 'string') {
-      return digitsOnly(value) ? [key, Number(value)] : [key, value];
+const digitsOnly = (string) => [...string].every((letter) => '0123456789'.includes(letter));
+
+const fixIniParser = (obj) => {
+  const entries = Object.entries(obj);
+  return entries.reduce((acc, element) => {
+    const [key, value] = element;
+    if (isObject(value)) {
+      return { ...acc, [key]: fixIniParser(value) };
     }
-    return [key, value];
-  });
-  const result = fixed.reduce((acc, item) => {
-    const [key, value] = item;
+    if (typeof value === 'string') {
+      if (digitsOnly(value)) {
+        return { ...acc, [key]: Number(value) };
+      }
+    }
     return { ...acc, [key]: value };
   }, {});
-  return result;
 };
 
 const combineObjects = (list) => {

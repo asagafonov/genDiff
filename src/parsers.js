@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import process from 'process';
 import YAML from 'js-yaml';
 import INI from 'ini';
 import { fixIniParser } from './utils.js';
@@ -8,18 +7,11 @@ import { fixIniParser } from './utils.js';
 const parseFile = (filename) => {
   const readFile = fs.readFileSync(filename, 'utf-8');
   const extension = path.extname(filename);
-  const iniFile = INI.parse(readFile);
-  const ymlFile = YAML.safeLoad(readFile);
-  const ymlEntries = Object.entries(ymlFile);
   switch (extension) {
     case '.yml':
-      return ymlEntries.reduce((acc, currentValue) => {
-        const [key, [value]] = currentValue;
-        acc[key] = value;
-        return acc;
-      }, {});
+      return YAML.safeLoad(readFile);
     case '.ini':
-      return fixIniParser(iniFile);
+      return fixIniParser(INI.parse(readFile));
     case '.json':
       return JSON.parse(readFile);
     default:

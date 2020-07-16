@@ -10,7 +10,11 @@ const genDiff = program
   .helpOption('-h, --help', 'output usage information')
   .arguments('<filepath1> <filepath2>')
   .option('-f, --format [type]', 'choose output format: stylish | plain | json', 'stylish')
-  .action((filepath1, filepath2) => console.log(compareFiles(filepath1, filepath2, program.format)));
+  .action((filepath1, filepath2) => {
+    console.log();
+    console.log(compareFiles(filepath1, filepath2, program.format));
+    console.log();
+  });
 
 program.parse(process.argv);
 
