@@ -1,27 +1,30 @@
-import _ from 'lodash';
-import { isObject, isUnique, combineObjects } from '../utils.js';
+import { isObject } from '../utils.js';
 
-const generatePlainDiff = (diff) => {
+const displayPlainDiff = (diff) => {
   const iter = (data, path) => data
     .reduce((acc, item) => {
-      const { name, status, children } = item;
+      const {
+        name, status, children, oldChildren, newChildren,
+      } = item;
       const newName = `${path}.${name}`;
+      const isComplex = (property) => (isObject(property) ? '[complex value]' : property);
       switch (status) {
         case 'unmodified':
           if (Array.isArray(children)) {
             return [...acc, ...iter(children, newName)];
           }
-          return [...acc, { name: newName, status, children }];
+          return [...acc, { name: newName, status, children: isComplex(children) }];
         case 'added':
-          if (isObject(children)) {
-            return [...acc, { name: newName, status, children: '[complex value]' }];
-          }
-          return [...acc, { name: newName, status, children }];
+          return [...acc, { name: newName, status, children: isComplex(children) }];
         case 'deleted':
-          if (isObject(children)) {
-            return [...acc, { name: newName, status, children: '[complex value]' }];
-          }
-          return [...acc, { name: newName, status, children }];
+          return [...acc, { name: newName, status, children: isComplex(children) }];
+        case 'modified':
+          return [...acc, {
+            name: newName,
+            status,
+            oldChildren: isComplex(oldChildren),
+            newChildren: isComplex(newChildren),
+          }];
         default:
           throw new Error(`Unknown status ${status}`);
       }
@@ -30,19 +33,15 @@ const generatePlainDiff = (diff) => {
 };
 
 export default (diff) => {
-  const list = generatePlainDiff(diff);
-  const unique = list.filter((element) => isUnique(list, element));
-  const notUnique = list.filter((element) => !isUnique(list, element));
-  const modified = combineObjects(notUnique);
-  const concat = _.concat(unique, modified);
-  const result = concat.flatMap((property) => {
+  const diffDisplay = displayPlainDiff(diff);
+  const result = diffDisplay.flatMap((property) => {
     switch (property.status) {
       case 'added':
         return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
       case 'deleted':
         return [`Property '${property.name.slice(1)}' was deleted`];
-      case 'changed':
-        return [`Property '${property.name.slice(1)}' was changed from '${property.value1}' to '${property.value2}'`];
+      case 'modified':
+        return [`Property '${property.name.slice(1)}' was changed from '${property.oldChildren}' to '${property.newChildren}'`];
       default:
         return [];
     }
