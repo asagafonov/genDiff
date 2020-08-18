@@ -2,9 +2,8 @@ import _ from 'lodash';
 import YAML from 'js-yaml';
 import INI from 'ini';
 
-const digitsOnly = (string) => [...string].every((letter) => '0123456789'.includes(letter));
-
 const fixIniParser = (obj) => {
+  const digitsOnly = (string) => [...string].every((letter) => '0123456789'.includes(letter));
   const entries = Object.entries(obj);
   return entries.reduce((acc, element) => {
     const [key, value] = element;
