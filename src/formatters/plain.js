@@ -13,11 +13,11 @@ const displayPlainDiff = (diff) => {
           if (Array.isArray(value)) {
             return [...acc, ...iter(value, newName)];
           }
-          return [...acc, { name: newName, status, value: propertyType(value) }];
+          return acc;
         case 'added':
           return [...acc, { name: newName, status, value: propertyType(value) }];
         case 'deleted':
-          return [...acc, { name: newName, status, value: propertyType(value) }];
+          return [...acc, { name: newName, status }];
         case 'modified':
           return [...acc, {
             name: newName,
