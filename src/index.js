@@ -2,32 +2,42 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import parseFile from './parsers.js';
-import { isObject } from './utils.js';
 import chooseDisplayMode from './formatters/index.js';
+
+const expand = (object) => {
+  const keys = Object.keys(object);
+  return keys.map((key) => {
+    if (!_.isPlainObject(object[key])) {
+      return { name: key, status: 'unmodified', value: object[key] };
+    }
+    return { name: key, status: 'unmodified', value: expand(object[key]) };
+  });
+};
 
 const makeDiff = (filename1, filename2) => {
   const keys1 = Object.keys(filename1);
   const keys2 = Object.keys(filename2);
   const keys = _.uniq(_.concat(keys1, keys2).sort());
 
-  const list = keys.flatMap((key) => {
-    if (!_.has(filename1, key) && _.has(filename2, key)) {
-      return { name: key, status: 'added', children: filename2[key] };
+  const valueType = (value) => (_.isPlainObject(value) ? expand(value) : value);
+
+  return keys.map((key) => {
+    if (!_.has(filename1, key)) {
+      return { name: key, status: 'added', value: valueType(filename2[key]) };
     }
-    if (_.has(filename1, key) && !_.has(filename2, key)) {
-      return { name: key, status: 'deleted', children: filename1[key] };
+    if (!_.has(filename2, key)) {
+      return { name: key, status: 'deleted', value: valueType(filename1[key]) };
     }
-    if (isObject(filename1[key]) && isObject(filename2[key])) {
-      return { name: key, status: 'unmodified', children: makeDiff(filename1[key], filename2[key]) };
+    if (_.isPlainObject(filename1[key]) && _.isPlainObject(filename2[key])) {
+      return { name: key, status: 'unmodified', value: makeDiff(filename1[key], filename2[key]) };
     }
     if (filename1[key] === filename2[key]) {
-      return { name: key, status: 'unmodified', children: filename1[key] };
+      return { name: key, status: 'unmodified', value: valueType(filename1[key]) };
     }
     return {
-      name: key, status: 'modified', oldChildren: filename1[key], newChildren: filename2[key],
+      name: key, status: 'modified', oldValue: valueType(filename1[key]), newValue: valueType(filename2[key]),
     };
   });
-  return list;
 };
 
 export default (filename1, filename2, format) => {
