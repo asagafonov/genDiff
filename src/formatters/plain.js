@@ -1,29 +1,29 @@
-import { isObject } from '../utils.js';
-
 const displayPlainDiff = (diff) => {
   const iter = (data, path) => data
     .reduce((acc, item) => {
       const {
-        name, status, children, oldChildren, newChildren,
+        name, status, value, oldValue, newValue,
       } = item;
       const newName = `${path}.${name}`;
-      const isComplex = (property) => (isObject(property) ? '[complex value]' : property);
+
+      const propertyType = (property) => (Array.isArray(property) ? '[complex value]' : property);
+
       switch (status) {
         case 'unmodified':
-          if (Array.isArray(children)) {
-            return [...acc, ...iter(children, newName)];
+          if (Array.isArray(value)) {
+            return [...acc, ...iter(value, newName)];
           }
-          return [...acc, { name: newName, status, children: isComplex(children) }];
+          return [...acc, { name: newName, status, value: propertyType(value) }];
         case 'added':
-          return [...acc, { name: newName, status, children: isComplex(children) }];
+          return [...acc, { name: newName, status, value: propertyType(value) }];
         case 'deleted':
-          return [...acc, { name: newName, status, children: isComplex(children) }];
+          return [...acc, { name: newName, status, value: propertyType(value) }];
         case 'modified':
           return [...acc, {
             name: newName,
             status,
-            oldChildren: isComplex(oldChildren),
-            newChildren: isComplex(newChildren),
+            oldValue: propertyType(oldValue),
+            newValue: propertyType(newValue),
           }];
         default:
           throw new Error(`Unknown status ${status}`);
@@ -37,11 +37,11 @@ export default (diff) => {
   const result = diffDisplay.flatMap((property) => {
     switch (property.status) {
       case 'added':
-        return [`Property '${property.name.slice(1)}' was added with value '${property.children}'`];
+        return [`Property '${property.name.slice(1)}' was added with value '${property.value}'`];
       case 'deleted':
-        return [`Property '${property.name.slice(1)}' was deleted`];
+        return [`Property '${property.name.slice(1)}' was removed`];
       case 'modified':
-        return [`Property '${property.name.slice(1)}' was changed from '${property.oldChildren}' to '${property.newChildren}'`];
+        return [`Property '${property.name.slice(1)}' was updated. From '${property.oldValue}' to '${property.newValue}'`];
       default:
         return [];
     }

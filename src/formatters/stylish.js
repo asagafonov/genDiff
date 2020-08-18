@@ -1,31 +1,28 @@
-import { isObject, stringify } from '../utils.js';
-
 const generateStylishDiff = (diff) => {
   const iter = (data, depth1, depth2) => data
-    .reduce((acc, item) => {
+    .map((item) => {
       const {
-        name, status, children, oldChildren, newChildren,
+        name, status, value, oldValue, newValue,
       } = item;
       const space = ' ';
       const indent1 = space.repeat(depth1);
       const indent2 = space.repeat(depth2);
-      const stringifyChildren = (property) => (isObject(property) ? stringify(property) : property);
+
+      const valueType = (property) => (Array.isArray(property) ? `{\n${iter(property, depth1 + 4, depth2 + 4).join('\n')}\n${indent1}}` : property);
+
       switch (status) {
         case 'unmodified':
-          if (Array.isArray(children)) {
-            return [...acc, [`${indent1}${name}: {\n${iter(children, depth1 + 4, depth2 + 4).join('\n')}\n${indent1}}`]];
-          }
-          return [...acc, [`${indent1}${name}: ${children}`]];
+          return [`${indent1}${name}: ${valueType(value)}`];
         case 'modified':
-          return [...acc, [`${indent2}- ${name}: ${stringifyChildren(oldChildren)}`], [`${indent2}+ ${name}: ${stringifyChildren(newChildren)}`]];
+          return [`${indent2}- ${name}: ${valueType(oldValue)}\n${indent2}+ ${name}: ${valueType(newValue)}`];
         case 'added':
-          return [...acc, [`${indent2}+ ${name}: ${stringifyChildren(children)}`]];
+          return [`${indent2}+ ${name}: ${valueType(value)}`];
         case 'deleted':
-          return [...acc, [`${indent2}- ${name}: ${stringifyChildren(children)}`]];
+          return [`${indent2}- ${name}: ${valueType(value)}`];
         default:
           throw new Error(`Unknown status ${status}`);
       }
-    }, []);
+    });
   return iter(diff, 4, 2);
 };
 
