@@ -28,6 +28,6 @@ describe('test genDiff, each case', () => {
       const generateDiff = genDiff(first, second, format).replace(/\s/g, '');
       const result = readFile(expectedResult).replace(/\s/g, '');
       expect(generateDiff).toEqual(result);
-    }
-  )
+    },
+  );
 });
