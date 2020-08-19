@@ -7,39 +7,27 @@ const __dirname = path.resolve();
 const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', `/${filename}`);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-let json1;
-let json2;
-let ini1;
-let ini2;
-let yml1;
-let yml2;
-let resultStylish;
-let resultPlain;
-let resultJSON;
+const cases = [
+  ['oldJSON.json', 'newJSON.json', 'stylish', 'expectedStylish.txt'],
+  ['oldJSON.json', 'newJSON.json', 'plain', 'expectedPlain.txt'],
+  ['oldJSON.json', 'newJSON.json', 'json', 'expectedJSON.txt'],
+  ['oldINI.ini', 'newINI.ini', 'stylish', 'expectedStylish.txt'],
+  ['oldINI.ini', 'newINI.ini', 'plain', 'expectedPlain.txt'],
+  ['oldINI.ini', 'newINI.ini', 'json', 'expectedJSON.txt'],
+  ['oldYAML.yml', 'newYAML.yml', 'stylish', 'expectedStylish.txt'],
+  ['oldYAML.yml', 'newYAML.yml', 'plain', 'expectedPlain.txt'],
+  ['oldYAML.yml', 'newYAML.yml', 'json', 'expectedJSON.txt'],
+];
 
-beforeEach(() => {
-  json1 = getFixturePath('oldJSON.json');
-  json2 = getFixturePath('newJSON.json');
-  ini1 = getFixturePath('oldINI.ini');
-  ini2 = getFixturePath('newINI.ini');
-  yml1 = getFixturePath('oldYAML.yml');
-  yml2 = getFixturePath('newYAML.yml');
-  resultStylish = readFile('expectedStylish.txt');
-  resultPlain = readFile('expectedPlain.txt');
-  resultJSON = readFile('expectedJSON.txt');
-});
-
-
-test('genDiff', () => {
-  expect(console.log(genDiff(json1, json2))).toEqual(console.log(resultStylish));
-  expect(console.log(genDiff(json1, json2, 'plain'))).toEqual(console.log(resultPlain));
-  expect(console.log(genDiff(json1, json2, 'json'))).toEqual(console.log(resultJSON));
-
-  expect(console.log(genDiff(ini1, ini2))).toEqual(console.log(resultStylish));
-  expect(console.log(genDiff(ini1, ini2, 'plain'))).toEqual(console.log(resultPlain));
-  expect(console.log(genDiff(ini1, ini2, 'json'))).toEqual(console.log(resultJSON));
-
-  expect(console.log(genDiff(yml1, yml2))).toEqual(console.log(resultStylish));
-  expect(console.log(genDiff(yml1, yml2, 'plain'))).toEqual(console.log(resultPlain));
-  expect(console.log(genDiff(yml1, yml2, 'json'))).toEqual(console.log(resultJSON));
+describe('test genDiff, each case', () => {
+  test.each(cases)(
+    'file %p and file %p formatted as %p result as %p',
+    (filepath1, filepath2, format, expectedResult) => {
+      const first = getFixturePath(filepath1);
+      const second = getFixturePath(filepath2);
+      const generateDiff = genDiff(first, second, format).replace(/\s/g, '');
+      const result = readFile(expectedResult).replace(/\s/g, '');
+      expect(generateDiff).toEqual(result);
+    }
+  )
 });
