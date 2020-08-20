@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import parseFile from './parsers.js';
-import chooseDisplayMode from './formatters/index.js';
+import parse from './parsers.js';
+import chooseOutput from './formatters/index.js';
 
 const expand = (object) => {
   const keys = Object.keys(object);
@@ -19,36 +19,43 @@ const makeDiff = (filename1, filename2) => {
   const keys2 = Object.keys(filename2);
   const keys = _.uniq(_.concat(keys1, keys2).sort());
 
-  const valueType = (value) => (_.isPlainObject(value) ? expand(value) : value);
+  const chooseValType = (v) => (_.isPlainObject(v) ? expand(v) : v);
 
   return keys.map((key) => {
     if (!_.has(filename1, key)) {
-      return { name: key, status: 'added', value: valueType(filename2[key]) };
+      return { name: key, status: 'added', value: chooseValType(filename2[key]) };
     }
     if (!_.has(filename2, key)) {
-      return { name: key, status: 'deleted', value: valueType(filename1[key]) };
+      return { name: key, status: 'deleted', value: chooseValType(filename1[key]) };
     }
     if (_.isPlainObject(filename1[key]) && _.isPlainObject(filename2[key])) {
       return { name: key, status: 'unmodified', value: makeDiff(filename1[key], filename2[key]) };
     }
     if (filename1[key] === filename2[key]) {
-      return { name: key, status: 'unmodified', value: valueType(filename1[key]) };
+      return { name: key, status: 'unmodified', value: chooseValType(filename1[key]) };
     }
     return {
-      name: key, status: 'modified', oldValue: valueType(filename1[key]), newValue: valueType(filename2[key]),
+      name: key, status: 'modified', oldValue: chooseValType(filename1[key]), newValue: chooseValType(filename2[key]),
     };
   });
 };
 
-export default (filename1, filename2, format) => {
+export default (filepath1, filepath2, outputFormat) => {
   const currentDirectory = process.cwd();
-  const filepath1 = path.resolve(currentDirectory, filename1);
-  const filepath2 = path.resolve(currentDirectory, filename2);
-  const identifyExtension = (filepath) => path.extname(filepath);
+  const fullPath1 = path.resolve(currentDirectory, filepath1);
+  const fullPath2 = path.resolve(currentDirectory, filepath2);
+
+  const getFileFormat = (filepath) => path.extname(filepath);
+  const fileFormat1 = getFileFormat(fullPath1);
+  const fileFormat2 = getFileFormat(fullPath2);
+
   const readFile = (filepath) => fs.readFileSync(filepath, 'utf-8');
-  const parsedFile1 = parseFile(readFile(filepath1), identifyExtension(filepath2));
-  const parsedFile2 = parseFile(readFile(filepath2), identifyExtension(filepath2));
+  const data1 = readFile(fullPath1);
+  const data2 = readFile(fullPath2);
+
+  const parsedFile1 = parse(data1, fileFormat1);
+  const parsedFile2 = parse(data2, fileFormat2);
   const diff = makeDiff(parsedFile1, parsedFile2);
-  const diffDisplay = chooseDisplayMode(format, diff);
-  return diffDisplay;
+  const showDifference = chooseOutput(outputFormat, diff);
+  return showDifference;
 };
