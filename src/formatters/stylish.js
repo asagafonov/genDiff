@@ -8,17 +8,17 @@ const generateStylishDiff = (diff) => {
       const indent1 = space.repeat(depth1);
       const indent2 = space.repeat(depth2);
 
-      const valueType = (property) => (Array.isArray(property) ? `{\n${iter(property, depth1 + 4, depth2 + 4).join('\n')}\n${indent1}}` : property);
+      const chooseValType = (m) => (Array.isArray(m) ? `{\n${iter(m, depth1 + 4, depth2 + 4).join('\n')}\n${indent1}}` : m);
 
       switch (status) {
         case 'unmodified':
-          return [`${indent1}${name}: ${valueType(value)}`];
+          return [`${indent1}${name}: ${chooseValType(value)}`];
         case 'modified':
-          return [`${indent2}- ${name}: ${valueType(oldValue)}\n${indent2}+ ${name}: ${valueType(newValue)}`];
+          return [`${indent2}- ${name}: ${chooseValType(oldValue)}\n${indent2}+ ${name}: ${chooseValType(newValue)}`];
         case 'added':
-          return [`${indent2}+ ${name}: ${valueType(value)}`];
+          return [`${indent2}+ ${name}: ${chooseValType(value)}`];
         case 'deleted':
-          return [`${indent2}- ${name}: ${valueType(value)}`];
+          return [`${indent2}- ${name}: ${chooseValType(value)}`];
         default:
           throw new Error(`Unknown status ${status}`);
       }

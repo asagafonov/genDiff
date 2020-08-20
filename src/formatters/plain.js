@@ -1,4 +1,4 @@
-const displayPlainDiff = (diff) => {
+const generatePlainDiff = (diff) => {
   const iter = (data, path) => data
     .reduce((acc, item) => {
       const {
@@ -6,7 +6,7 @@ const displayPlainDiff = (diff) => {
       } = item;
       const newName = `${path}.${name}`;
 
-      const propertyType = (property) => (Array.isArray(property) ? '[complex value]' : property);
+      const chooseValType = (n) => (Array.isArray(n) ? '[complex value]' : n);
 
       switch (status) {
         case 'unmodified':
@@ -15,15 +15,15 @@ const displayPlainDiff = (diff) => {
           }
           return acc;
         case 'added':
-          return [...acc, { name: newName, status, value: propertyType(value) }];
+          return [...acc, { name: newName, status, value: chooseValType(value) }];
         case 'deleted':
           return [...acc, { name: newName, status }];
         case 'modified':
           return [...acc, {
             name: newName,
             status,
-            oldValue: propertyType(oldValue),
-            newValue: propertyType(newValue),
+            oldValue: chooseValType(oldValue),
+            newValue: chooseValType(newValue),
           }];
         default:
           throw new Error(`Unknown status ${status}`);
@@ -33,8 +33,8 @@ const displayPlainDiff = (diff) => {
 };
 
 export default (diff) => {
-  const diffDisplay = displayPlainDiff(diff);
-  const result = diffDisplay.flatMap((property) => {
+  const plainDiff = generatePlainDiff(diff);
+  const result = plainDiff.flatMap((property) => {
     switch (property.status) {
       case 'added':
         return [`Property '${property.name.slice(1)}' was added with value '${property.value}'`];

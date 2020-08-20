@@ -2,8 +2,8 @@ import stylish from './stylish.js';
 import json from './json.js';
 import plain from './plain.js';
 
-const chooseDisplayMode = (format, diff) => {
-  switch (format) {
+const chooseOutput = (outputType, diff) => {
+  switch (outputType) {
     case 'plain':
       return plain(diff);
     case 'json':
@@ -13,4 +13,4 @@ const chooseDisplayMode = (format, diff) => {
   }
 };
 
-export default chooseDisplayMode;
+export default chooseOutput;
