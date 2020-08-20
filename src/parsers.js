@@ -19,17 +19,17 @@ const fixIniParser = (obj) => {
   }, {});
 };
 
-const parseFile = (fileContent, extension) => {
-  switch (extension) {
-    case '.yml':
-      return YAML.safeLoad(fileContent);
-    case '.ini':
-      return fixIniParser(INI.parse(fileContent));
+const parse = (data, format) => {
+  switch (format) {
     case '.json':
-      return JSON.parse(fileContent);
+      return JSON.parse(data);
+    case '.yml':
+      return YAML.safeLoad(data);
+    case '.ini':
+      return fixIniParser(INI.parse(data));
     default:
-      throw new Error(`Unknown file extension: ${extension}`);
+      throw new Error(`Unknown data format: ${format}`);
   }
 };
 
-export default parseFile;
+export default parse;
