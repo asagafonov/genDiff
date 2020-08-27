@@ -25,8 +25,8 @@ describe('test genDiff, each case', () => {
     (filepath1, filepath2, format, expectedResult) => {
       const first = getFixturePath(filepath1);
       const second = getFixturePath(filepath2);
-      const generateDiff = genDiff(first, second, format).replace(/\s/g, '');
-      const result = readFile(expectedResult).replace(/\s/g, '');
+      const generateDiff = genDiff(first, second, format).trim();
+      const result = readFile(expectedResult).trim();
       expect(generateDiff).toEqual(result);
     },
   );
