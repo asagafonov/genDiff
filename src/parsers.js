@@ -21,11 +21,11 @@ const fixIniParser = (obj) => {
 
 const parse = (data, format) => {
   switch (format) {
-    case '.json':
+    case 'json':
       return JSON.parse(data);
-    case '.yml':
+    case 'yml':
       return YAML.safeLoad(data);
-    case '.ini':
+    case 'ini':
       return fixIniParser(INI.parse(data));
     default:
       throw new Error(`Unknown data format: ${format}`);
