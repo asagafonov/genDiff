@@ -15,9 +15,7 @@ const expand = (object) => {
 };
 
 const makeDiff = (filename1, filename2) => {
-  const keys1 = Object.keys(filename1);
-  const keys2 = Object.keys(filename2);
-  const keys = _.uniq(_.concat(keys1, keys2).sort());
+  const keys = _.union(_.keys(filename1), _.keys(filename2)).sort();
 
   const chooseValType = (v) => (_.isPlainObject(v) ? expand(v) : v);
 
@@ -45,7 +43,7 @@ export default (filepath1, filepath2, outputFormat) => {
   const fullPath1 = path.resolve(currentDirectory, filepath1);
   const fullPath2 = path.resolve(currentDirectory, filepath2);
 
-  const getFileFormat = (filepath) => path.extname(filepath);
+  const getFileFormat = (filepath) => path.extname(filepath).slice(1);
   const fileFormat1 = getFileFormat(fullPath1);
   const fileFormat2 = getFileFormat(fullPath2);
 
