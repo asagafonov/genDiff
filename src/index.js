@@ -4,36 +4,24 @@ import path from 'path';
 import parse from './parsers.js';
 import chooseOutput from './formatters/index.js';
 
-const expand = (object) => {
-  const keys = Object.keys(object);
-  return keys.map((key) => {
-    if (!_.isObject(object[key])) {
-      return { name: key, status: 'unmodified', value: object[key] };
-    }
-    return { name: key, status: 'unmodified', value: expand(object[key]) };
-  });
-};
-
 const makeDiff = (obj1, obj2) => {
   const keys = _.union(_.keys(obj1), _.keys(obj2)).sort();
 
-  const chooseValType = (v) => (_.isObject(v) ? expand(v) : v);
-
   return keys.map((key) => {
     if (!_.has(obj1, key)) {
-      return { name: key, status: 'added', value: chooseValType(obj2[key]) };
+      return { name: key, status: 'added', value: obj2[key] };
     }
     if (!_.has(obj2, key)) {
-      return { name: key, status: 'deleted', value: chooseValType(obj1[key]) };
+      return { name: key, status: 'deleted', value: obj1[key] };
     }
     if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-      return { name: key, status: 'unmodified', value: makeDiff(obj1[key], obj2[key]) };
+      return { name: key, status: 'unknown', value: makeDiff(obj1[key], obj2[key]) };
     }
     if (obj1[key] === obj2[key]) {
-      return { name: key, status: 'unmodified', value: chooseValType(obj1[key]) };
+      return { name: key, status: 'unmodified', value: obj1[key] };
     }
     return {
-      name: key, status: 'modified', oldValue: chooseValType(obj1[key]), newValue: chooseValType(obj2[key]),
+      name: key, status: 'modified', oldValue: obj1[key], newValue: obj2[key],
     };
   });
 };
