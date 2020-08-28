@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const generatePlainDiff = (diff) => {
   const iter = (data, path) => data
     .reduce((acc, item) => {
@@ -6,7 +8,7 @@ const generatePlainDiff = (diff) => {
       } = item;
       const newName = `${path}.${name}`;
 
-      const chooseValType = (n) => (Array.isArray(n) ? '[complex value]' : n);
+      const chooseValType = (n) => (_.isObject(n) ? '[complex value]' : n);
 
       switch (status) {
         case 'unmodified':

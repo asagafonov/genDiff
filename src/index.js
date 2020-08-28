@@ -7,33 +7,33 @@ import chooseOutput from './formatters/index.js';
 const expand = (object) => {
   const keys = Object.keys(object);
   return keys.map((key) => {
-    if (!_.isPlainObject(object[key])) {
+    if (!_.isObject(object[key])) {
       return { name: key, status: 'unmodified', value: object[key] };
     }
     return { name: key, status: 'unmodified', value: expand(object[key]) };
   });
 };
 
-const makeDiff = (filename1, filename2) => {
-  const keys = _.union(_.keys(filename1), _.keys(filename2)).sort();
+const makeDiff = (obj1, obj2) => {
+  const keys = _.union(_.keys(obj1), _.keys(obj2)).sort();
 
-  const chooseValType = (v) => (_.isPlainObject(v) ? expand(v) : v);
+  const chooseValType = (v) => (_.isObject(v) ? expand(v) : v);
 
   return keys.map((key) => {
-    if (!_.has(filename1, key)) {
-      return { name: key, status: 'added', value: chooseValType(filename2[key]) };
+    if (!_.has(obj1, key)) {
+      return { name: key, status: 'added', value: chooseValType(obj2[key]) };
     }
-    if (!_.has(filename2, key)) {
-      return { name: key, status: 'deleted', value: chooseValType(filename1[key]) };
+    if (!_.has(obj2, key)) {
+      return { name: key, status: 'deleted', value: chooseValType(obj1[key]) };
     }
-    if (_.isPlainObject(filename1[key]) && _.isPlainObject(filename2[key])) {
-      return { name: key, status: 'unmodified', value: makeDiff(filename1[key], filename2[key]) };
+    if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
+      return { name: key, status: 'unmodified', value: makeDiff(obj1[key], obj2[key]) };
     }
-    if (filename1[key] === filename2[key]) {
-      return { name: key, status: 'unmodified', value: chooseValType(filename1[key]) };
+    if (obj1[key] === obj2[key]) {
+      return { name: key, status: 'unmodified', value: chooseValType(obj1[key]) };
     }
     return {
-      name: key, status: 'modified', oldValue: chooseValType(filename1[key]), newValue: chooseValType(filename2[key]),
+      name: key, status: 'modified', oldValue: chooseValType(obj1[key]), newValue: chooseValType(obj2[key]),
     };
   });
 };
@@ -54,6 +54,6 @@ export default (filepath1, filepath2, outputFormat) => {
   const parsedFile1 = parse(data1, fileFormat1);
   const parsedFile2 = parse(data2, fileFormat2);
   const diff = makeDiff(parsedFile1, parsedFile2);
-  const showDifference = chooseOutput(outputFormat, diff);
-  return showDifference;
+  const result = chooseOutput(outputFormat, diff);
+  return result;
 };
