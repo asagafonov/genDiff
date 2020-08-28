@@ -11,15 +11,14 @@ const generatePlainDiff = (diff) => {
       const chooseValType = (n) => (_.isObject(n) ? '[complex value]' : n);
 
       switch (status) {
-        case 'unmodified':
-          if (Array.isArray(value)) {
-            return [...acc, ...iter(value, newName)];
-          }
-          return acc;
         case 'added':
           return [...acc, { name: newName, status, value: chooseValType(value) }];
         case 'deleted':
           return [...acc, { name: newName, status }];
+        case 'unknown':
+          return [...acc, ...iter(value, newName)];
+        case 'unmodified':
+          return [...acc];
         case 'modified':
           return [...acc, {
             name: newName,
@@ -43,7 +42,7 @@ export default (diff) => {
       case 'deleted':
         return [`Property '${property.name.slice(1)}' was removed`];
       case 'modified':
-        return [`Property '${property.name.slice(1)}' was updated. From '${property.oldValue}' to '${property.newValue}'`];
+        return [`Property '${property.name.slice(1)}' was updated from '${property.oldValue}' to '${property.newValue}'`];
       default:
         return [];
     }
