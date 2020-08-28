@@ -8,24 +8,24 @@ const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', `/${fi
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
 const cases = [
-  ['oldJSON.json', 'newJSON.json', 'stylish', 'expectedStylish.txt'],
-  ['oldJSON.json', 'newJSON.json', 'plain', 'expectedPlain.txt'],
-  ['oldJSON.json', 'newJSON.json', 'json', 'expectedJSON.txt'],
-  ['oldINI.ini', 'newINI.ini', 'stylish', 'expectedStylish.txt'],
-  ['oldINI.ini', 'newINI.ini', 'plain', 'expectedPlain.txt'],
-  ['oldINI.ini', 'newINI.ini', 'json', 'expectedJSON.txt'],
-  ['oldYAML.yml', 'newYAML.yml', 'stylish', 'expectedStylish.txt'],
-  ['oldYAML.yml', 'newYAML.yml', 'plain', 'expectedPlain.txt'],
-  ['oldYAML.yml', 'newYAML.yml', 'json', 'expectedJSON.txt'],
+  ['json', 'stylish', 'expectedStylish.txt'],
+  ['json', 'plain', 'expectedPlain.txt'],
+  ['json', 'json', 'expectedJSON.txt'],
+  ['ini', 'stylish', 'expectedStylish.txt'],
+  ['ini', 'plain', 'expectedPlain.txt'],
+  ['ini', 'json', 'expectedJSON.txt'],
+  ['yml', 'stylish', 'expectedStylish.txt'],
+  ['yml', 'plain', 'expectedPlain.txt'],
+  ['yml', 'json', 'expectedJSON.txt'],
 ];
 
 describe('test genDiff, each case', () => {
   test.each(cases)(
-    'file %p and file %p formatted as %p result as %p',
-    (filepath1, filepath2, format, expectedResult) => {
-      const first = getFixturePath(filepath1);
-      const second = getFixturePath(filepath2);
-      const generateDiff = genDiff(first, second, format).trim();
+    'files of type %p formatted as %p are expected to match %p',
+    (type, format, expectedResult) => {
+      const before = getFixturePath(`before.${type}`);
+      const after = getFixturePath(`after.${type}`);
+      const generateDiff = genDiff(before, after, format).trim();
       const result = readFile(expectedResult).trim();
       expect(generateDiff).toEqual(result);
     },
