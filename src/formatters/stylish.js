@@ -13,7 +13,7 @@ const expand = (val) => {
   });
 };
 
-const generateStylishDiff = (diff) => {
+const formatDiffAsStylish = (diff) => {
   const iter = (data, depth1, depth2) => data
     .map((item) => {
       const {
@@ -46,6 +46,6 @@ const generateStylishDiff = (diff) => {
 };
 
 export default (diff) => {
-  const result = generateStylishDiff(diff);
-  return `{\n${result.join('\n')}\n}`;
+  const stylishDiff = formatDiffAsStylish(diff);
+  return `{\n${stylishDiff.join('\n')}\n}`;
 };

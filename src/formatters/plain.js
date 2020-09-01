@@ -1,27 +1,27 @@
 import _ from 'lodash';
 
-const generatePlainDiff = (diff) => {
+const formatDiffAsPlain = (diff) => {
   const iter = (data, path) => data
     .reduce((acc, item) => {
       const {
         name, status, value, oldValue, newValue,
       } = item;
-      const newName = `${path}.${name}`;
+      const newPath = `${path}.${name}`;
 
       const chooseValType = (n) => (_.isObject(n) ? '[complex value]' : n);
 
       switch (status) {
         case 'added':
-          return [...acc, { name: newName, status, value: chooseValType(value) }];
+          return [...acc, { name: newPath, status, value: chooseValType(value) }];
         case 'deleted':
-          return [...acc, { name: newName, status }];
+          return [...acc, { name: newPath, status }];
         case 'unknown':
-          return [...acc, ...iter(value, newName)];
+          return [...acc, ...iter(value, newPath)];
         case 'unmodified':
           return [...acc];
         case 'modified':
           return [...acc, {
-            name: newName,
+            name: newPath,
             status,
             oldValue: chooseValType(oldValue),
             newValue: chooseValType(newValue),
@@ -34,7 +34,7 @@ const generatePlainDiff = (diff) => {
 };
 
 export default (diff) => {
-  const plainDiff = generatePlainDiff(diff);
+  const plainDiff = formatDiffAsPlain(diff);
   const result = plainDiff.flatMap((property) => {
     switch (property.status) {
       case 'added':
