@@ -1,51 +1,37 @@
 import _ from 'lodash';
 
-const formatDiffAsPlain = (diff) => {
-  const iter = (data, path) => data
-    .reduce((acc, item) => {
-      const {
-        name, status, value, oldValue, newValue,
-      } = item;
-      const newPath = `${path}.${name}`;
-
-      const chooseValType = (n) => (_.isObject(n) ? '[complex value]' : n);
-
-      switch (status) {
-        case 'added':
-          return [...acc, { name: newPath, status, value: chooseValType(value) }];
-        case 'deleted':
-          return [...acc, { name: newPath, status }];
-        case 'unknown':
-          return [...acc, ...iter(value, newPath)];
-        case 'unmodified':
-          return [...acc];
-        case 'modified':
-          return [...acc, {
-            name: newPath,
-            status,
-            oldValue: chooseValType(oldValue),
-            newValue: chooseValType(newValue),
-          }];
-        default:
-          throw new Error(`Unknown status ${status}`);
-      }
-    }, []);
-  return iter(diff, '');
+const setToFormat = (val) => {
+  if (_.isObject(val)) {
+    return '[complex value]';
+  }
+  if (typeof val === 'boolean') {
+    return val;
+  }
+  return `'${val}'`;
 };
 
 export default (diff) => {
-  const plainDiff = formatDiffAsPlain(diff);
-  const result = plainDiff.flatMap((property) => {
-    switch (property.status) {
-      case 'added':
-        return [`Property '${property.name.slice(1)}' was added with value '${property.value}'`];
-      case 'deleted':
-        return [`Property '${property.name.slice(1)}' was removed`];
-      case 'modified':
-        return [`Property '${property.name.slice(1)}' was updated from '${property.oldValue}' to '${property.newValue}'`];
-      default:
-        return [];
-    }
-  });
-  return result.sort().join('\n');
+  const iter = (data, path) => data
+    .flatMap((item) => {
+      const {
+        name, status, value, children, oldValue, newValue,
+      } = item;
+      const newPath = `${path}.${name}`;
+
+      switch (status) {
+        case 'added':
+          return `Property '${newPath.slice(1)}' was added with value: ${setToFormat(value)}`;
+        case 'deleted':
+          return `Property '${newPath.slice(1)}' was removed`;
+        case 'unknown':
+          return iter(children, newPath);
+        case 'unmodified':
+          return [];
+        case 'modified':
+          return `Property '${newPath.slice(1)}' was updated from ${setToFormat(oldValue)} to ${setToFormat(newValue)}`;
+        default:
+          throw new Error(`Unknown status ${status}`);
+      }
+    });
+  return iter(diff, '').join('\n');
 };
