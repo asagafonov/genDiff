@@ -40,8 +40,8 @@ export default (diff) => {
           return `${indent1}${name}: ${formatValue(value)}`;
         case 'modified':
           return [
-            [`${indent2}- ${name}: ${formatValue(oldValue)}`],
-            [`${indent2}+ ${name}: ${formatValue(newValue)}`],
+            `${indent2}- ${name}: ${formatValue(oldValue)}`,
+            `${indent2}+ ${name}: ${formatValue(newValue)}`,
           ];
         default:
           throw new Error(`Unknown status ${status}`);
