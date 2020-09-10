@@ -2,7 +2,7 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import parse from './parsers.js';
-import chooseOutput from './formatters/index.js';
+import format from './formatters/index.js';
 
 const makeDiff = (obj1, obj2) => {
   const keys = _.union(_.keys(obj1), _.keys(obj2)).sort();
@@ -15,7 +15,7 @@ const makeDiff = (obj1, obj2) => {
       return { name: key, status: 'deleted', value: obj1[key] };
     }
     if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-      return { name: key, status: 'unknown', value: makeDiff(obj1[key], obj2[key]) };
+      return { name: key, status: 'unknown', children: makeDiff(obj1[key], obj2[key]) };
     }
     if (obj1[key] === obj2[key]) {
       return { name: key, status: 'unmodified', value: obj1[key] };
@@ -42,6 +42,6 @@ export default (filepath1, filepath2, outputFormat) => {
   const parsedFile1 = parse(data1, fileFormat1);
   const parsedFile2 = parse(data2, fileFormat2);
   const diff = makeDiff(parsedFile1, parsedFile2);
-  const result = chooseOutput(outputFormat, diff);
+  const result = format(outputFormat, diff);
   return result;
 };
