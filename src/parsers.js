@@ -7,7 +7,7 @@ const fixIniParser = (obj) => {
   const entries = Object.entries(obj);
   return entries.reduce((acc, element) => {
     const [key, value] = element;
-    if (_.isPlainObject(value)) {
+    if (_.isObject(value)) {
       return { ...acc, [key]: fixIniParser(value) };
     }
     if (typeof value === 'string') {
