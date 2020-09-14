@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const setToFormat = (val) => {
+const stringify = (val) => {
   if (_.isObject(val)) {
     return '[complex value]';
   }
@@ -20,7 +20,7 @@ export default (diff) => {
 
       switch (status) {
         case 'added':
-          return `Property '${newPath.slice(1)}' was added with value: ${setToFormat(value)}`;
+          return `Property '${newPath.slice(1)}' was added with value: ${stringify(value)}`;
         case 'deleted':
           return `Property '${newPath.slice(1)}' was removed`;
         case 'unknown':
@@ -28,7 +28,7 @@ export default (diff) => {
         case 'unmodified':
           return [];
         case 'modified':
-          return `Property '${newPath.slice(1)}' was updated from ${setToFormat(oldValue)} to ${setToFormat(newValue)}`;
+          return `Property '${newPath.slice(1)}' was updated from ${stringify(oldValue)} to ${stringify(newValue)}`;
         default:
           throw new Error(`Unknown status ${status}`);
       }
